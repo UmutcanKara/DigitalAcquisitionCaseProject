@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -12,18 +13,23 @@ type Auth struct {
 }
 
 type Repository interface {
-	login(username, password string) (bson.M, error)
+	login(username, password string) error
 	register(username, password, hometown string) error
+	getUser(username string) (bson.M, error)
 }
 
 type Service interface {
-	login(ctx context.Context, req LoginReq) (LoginRes, error)
-	register(ctx context.Context, req RegisterReq) (RegisterRes, error)
+	login(ctx context.Context, req LoginReq) error
+	register(ctx context.Context, req RegisterReq) error
+	getUser(ctx context.Context, username string) (bson.M, error)
+	createJWTToken(ctx context.Context, username string) (string, error)
 }
 
 type Handler interface {
-	Login(req LoginReq) string
-	Register(req RegisterReq) string
+	Login(c *gin.Context)
+	Register(c *gin.Context)
+	GetUser(c *gin.Context)
+	Logout(c *gin.Context)
 }
 
 type RegisterReq struct {

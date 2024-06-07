@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"github.com/golang-jwt/jwt/v5"
+	"go.mongodb.org/mongo-driver/bson"
 	"os"
 	"time"
 )
@@ -16,38 +17,43 @@ func NewService(r Repository) Service {
 	return &service{r, time.Duration(5) * time.Second}
 }
 
-func (s *service) login(ctx context.Context, req LoginReq) (LoginRes, error) {
+func (s *service) login(ctx context.Context, req LoginReq) error {
 	ctx, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
 
-	if _, err := s.Repository.login(req.Username, req.Password); err != nil {
-		return LoginRes{}, err
+	if err := s.Repository.login(req.Username, req.Password); err != nil {
+		return err
 	}
 
-	ss, err := createJWTToken(req.Username)
-	if err != nil {
-		return LoginRes{}, err
-	}
-
-	return LoginRes{ss}, nil
+	return nil
 }
 
-func (s *service) register(ctx context.Context, req RegisterReq) (RegisterRes, error) {
+func (s *service) register(ctx context.Context, req RegisterReq) error {
 	ctx, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
 
 	if err := s.Repository.register(req.Username, req.Password, req.Hometown); err != nil {
-		return RegisterRes{}, err
+		return err
 	}
 
-	ss, err := createJWTToken(req.Username)
-	if err != nil {
-		return RegisterRes{}, err
-	}
-	return RegisterRes{ss}, nil
+	return nil
 }
 
-func createJWTToken(username string) (string, error) {
+func (s *service) getUser(ctx context.Context, username string) (bson.M, error) {
+	ctx, cancel := context.WithTimeout(ctx, s.timeout)
+	defer cancel()
+
+	result, err := s.Repository.getUser(username)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+func (s *service) createJWTToken(ctx context.Context, username string) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, s.timeout)
+	defer cancel()
+
 	jwtSecret := os.Getenv("JWT_SECRET")
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    username,

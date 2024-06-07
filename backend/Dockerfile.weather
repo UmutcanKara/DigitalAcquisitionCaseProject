@@ -24,8 +24,13 @@ WORKDIR /root/
 # Copy the Pre-built binary file from the previous stage
 COPY --from=build /app/weather .
 
+# Introduce environment variable
+ENV MONGODB_URI = "mongodb+srv://testuser:testuser@users.n6ag96y.mongodb.net/?retryWrites=true&w=majority&appName=users"
+ENV GOOGLE_MAPS_KEY = "AIzaSyC2feE-um1mJ7fBXOyQ4ASykJ54lpyM9ag"
+ENV WEATHER_URL = "https://archive-api.open-meteo.com/v1/archive"
+
 # Expose port 8082 to the outside world
-EXPOSE 8082
+EXPOSE 8081
 
 # Command to run the executable
 CMD ["./weather"]

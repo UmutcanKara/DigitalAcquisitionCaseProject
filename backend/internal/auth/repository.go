@@ -19,18 +19,18 @@ type repository struct {
 
 func NewRepository(c *mongo.Client) Repository { return &repository{c} }
 
-func (r *repository) login(username, password string) (bson.M, error) {
+func (r *repository) login(username, password string) error {
 	result := bson.M{username: "", password: ""}
 	coll := r.client.Database("DigitalAcquisitionCaseProject").Collection("users")
 	err := coll.FindOne(context.TODO(), bson.M{"username": username}).Decode(&result)
 	if err != nil {
-		return bson.M{}, err
+		return err
 	}
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		return bson.M{}, errors.New("user not found")
+		return errors.New("user not found")
 	}
 
-	return result, nil
+	return nil
 }
 
 func (r *repository) register(username, password, hometown string) error {
@@ -43,5 +43,13 @@ func (r *repository) register(username, password, hometown string) error {
 	return nil
 }
 
-// mongodb+srv://testuser:testuser@users.n6ag96y.mongodb.net/?retryWrites=true&w=majority&appName=users
-// mongodb+srv://testuser:testuser@users.n6ag96y.mongodb.net/?retryWrites=true&w=majority&appName=users
+func (r *repository) getUser(username string) (bson.M, error) {
+	result := bson.M{}
+	coll := r.client.Database("DigitalAcquisitionCaseProject").Collection("users")
+	err := coll.FindOne(context.TODO(), bson.M{"username": username}).Decode(&result)
+	if err != nil {
+		return bson.M{}, err
+	}
+
+	return result, nil
+}

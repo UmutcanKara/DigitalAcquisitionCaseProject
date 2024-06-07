@@ -28,7 +28,7 @@ COPY --from=build /app/auth .
 ENV MONGODB_URI = "mongodb+srv://testuser:testuser@users.n6ag96y.mongodb.net/?retryWrites=true&w=majority&appName=users"
 
 # Expose port 8081 to the outside world
-EXPOSE 8081
+EXPOSE 8080
 
 # Command to run the executable
 CMD ["./auth"]
