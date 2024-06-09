@@ -2,3 +2,4 @@
 */.idea
 .idea
 */!/backend/.env.example
+frontend/node_modules

@@ -2,16 +2,12 @@ import React from "react";
 import {WeatherService} from "../api/service/weather.js";
 import {AuthContext} from "../context/AuthContext.jsx";
 import {AuthService} from "../api/service/auth.js";
-import login from "../components/Auth/Login.jsx";
 import {useNavigate} from "react-router-dom";
 import Chart from "react-apexcharts";
-import {Box, Button, ButtonGroup, CircularProgress, TextField, Typography} from "@mui/material";
-import Graph from "../components/Graph/Graph.jsx";
-// import  from "react-apexcharts"
+import {Box, Button, ButtonGroup, CircularProgress, Typography} from "@mui/material";
 
 const Dashboard = () => {
     const [isLoading, setIsLoading] = React.useState(true)
-    const [isCityEmpty, setIsCityEmpty] = React.useState(false)
     const [userData, setUserData] = React.useState({
         username: "",
         hometown: ""
@@ -19,10 +15,6 @@ const Dashboard = () => {
     const [chartData, setChartData] = React.useState()
     const navigate = useNavigate()
     const { auth, logout } = React.useContext(AuthContext)
-    const [queryParams, setQueryParams] = React.useState({
-        city: "",
-        historyDepth: "",
-    })
     React.useEffect(() => {
         const getUserData = async () => {
             let user = await AuthService.getUser(auth.username)
@@ -40,7 +32,7 @@ const Dashboard = () => {
 
     }, [])
 
-    const fetchWeatherData = async (user, depthChoice = "3M", isSearch = false) => {
+    const fetchWeatherData = async (user, depthChoice = "3M") => {
         setIsLoading(true)
         let now = new Date()
         switch (depthChoice) {
@@ -56,7 +48,7 @@ const Dashboard = () => {
 
         }
         let isoDate = now.toISOString().split("T")[0]
-        let weatherData = await WeatherService.getWeather(isSearch ? queryParams.city : user.hometown ,isoDate)
+        let weatherData = await WeatherService.getWeather(user.hometown ,isoDate)
         let length = weatherData.data.hourly.time.length
         // 100 = length / x
         let step = parseInt((length / 100).toFixed(0))
@@ -83,33 +75,11 @@ const Dashboard = () => {
         })
         setIsLoading(false)
     }
-    const onSearchHandler = () => {
-        const fetchData = async () => {
-            await fetchWeatherData(userData, queryParams.historyDepth, true).then(data => console.log(data))
-        }
-        if (!queryParams.city) {
-            setIsCityEmpty(true)
-            return
-        }
-        fetchData().then().catch(e => console.error(e))
-    }
-    const onQueryChangeHandler = (depth) => {
-        setQueryParams(prevState => ({
-            ...prevState,
-            historyDepth: depth,
-        }))
-    }
-    const onTextChangleHandlre =(e) => {
-        if (isCityEmpty) setIsCityEmpty(false)
-        setQueryParams(prevState => ({
-            ...prevState,
-            [e.target.name]: e.target.value
-        }))
-    }
 
     return <Box>
         <Typography variant="h4" gutterBottom>Welcome back {auth.username}</Typography>
-        <Typography variant="h5" gutterBottom>The default graph is your register hometown for the last 3 months</Typography>
+        <Typography variant="h5" gutterBottom>The default graph is your register hometown = "{userData.hometown}" for the last 3 months</Typography>
+        {/*<Typography variant="h5" gutterBottom></Typography>*/}
         <ButtonGroup variant="contained" sx={{marginBottom: 3}} size="large">
             <Button name="3M"
                     onClick={() => fetchWeatherData(userData, "3M")}
