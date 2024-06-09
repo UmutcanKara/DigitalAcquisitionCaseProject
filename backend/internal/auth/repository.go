@@ -31,7 +31,7 @@ func (r *repository) login(username, password string) error {
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		return errors.New("user not found")
 	}
-	if err = util.CheckPassword(loginReq.Password, password); err != nil {
+	if err = util.CheckPassword(password, loginReq.Password); err != nil {
 		return err
 	}
 	return nil

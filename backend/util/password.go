@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 )
 
 func HashPassword(password string) (string, error) {
@@ -15,5 +16,6 @@ func HashPassword(password string) (string, error) {
 }
 
 func CheckPassword(password string, hashedPassword string) error {
+	log.Println(hashedPassword, password)
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

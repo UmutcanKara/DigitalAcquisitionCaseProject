@@ -40,7 +40,7 @@ func (s *service) register(ctx context.Context, req RegisterReq) error {
 	if err != nil {
 		return err
 	}
-	if err := s.Repository.register(req.Username, hashedPwd, req.Hometown); err != nil {
+	if err = s.Repository.register(req.Username, hashedPwd, req.Hometown); err != nil {
 		return err
 	}
 
