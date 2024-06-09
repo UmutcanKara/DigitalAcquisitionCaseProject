@@ -18,6 +18,7 @@ func ConnectDB() (*Database, error) {
 		log.Fatal("Error loading .env file")
 	}
 	uri := os.Getenv("MONGODB_URI")
+	log.Printf("Connecting to MongoDB at %s", uri)
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
 	if err != nil {
 		return nil, err

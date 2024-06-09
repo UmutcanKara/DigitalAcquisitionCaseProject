@@ -47,6 +47,7 @@ func (s *service) getUser(ctx context.Context, username string) (bson.M, error) 
 	if err != nil {
 		return result, err
 	}
+	result["password"] = ""
 	return result, nil
 }
 
@@ -58,7 +59,7 @@ func (s *service) createJWTToken(ctx context.Context, username string) (string, 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    username,
 		Subject:   username,
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(24) * time.Hour)),
 	})
 	signedToken, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {

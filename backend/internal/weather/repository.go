@@ -32,18 +32,18 @@ func NewRepository(c *mongo.Client) Repository {
 	return &repository{c}
 }
 
-func (r *repository) findWeather(hometown string) (bson.M, error) {
-	result := bson.M{}
-	coll := r.client.Database(hometown).Collection("weather")
+func (r *repository) findWeather(hometown string) (RepositoryBson, error) {
+	result := RepositoryBson{}
+	coll := r.client.Database("DigitalAcquisitionCaseProject").Collection("weather")
 	err := coll.FindOne(context.TODO(), bson.M{"town": hometown}).Decode(&result)
 	if err != nil {
-		return bson.M{}, nil
+		return RepositoryBson{}, err
 	}
 	return result, nil
 }
 func (r *repository) updateWeather(hometown string, weather HistoryWeatherResponse) error {
 	updateWeather := bson.M{"town": hometown, "weather": weather}
-	coll := r.client.Database(hometown).Collection("weather")
+	coll := r.client.Database("DigitalAcquisitionCaseProject").Collection("weather")
 	_, err := coll.UpdateOne(context.TODO(), bson.M{"town": hometown}, updateWeather)
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func (r *repository) updateWeather(hometown string, weather HistoryWeatherRespon
 }
 func (r *repository) addWeather(hometown string, weather HistoryWeatherResponse) error {
 	insertWeather := bson.M{"town": hometown, "weather": weather}
-	coll := r.client.Database(hometown).Collection("weather")
+	coll := r.client.Database("DigitalAcquisitionCaseProject").Collection("weather")
 	_, err := coll.InsertOne(context.TODO(), insertWeather)
 	if err != nil {
 		return err

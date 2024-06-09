@@ -29,7 +29,7 @@ func (j *jwtMiddleware) Authorize() gin.HandlerFunc {
 		jwtToken, err := c.Cookie("Authorization")
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
-			j.logger.Warnf("Error getting cookie token")
+			j.logger.Warnf("Error getting cookie token: " + err.Error())
 			return
 		}
 		token, err := jwt.ParseWithClaims(

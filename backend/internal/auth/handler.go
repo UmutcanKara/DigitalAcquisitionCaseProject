@@ -38,7 +38,7 @@ func (h *handler) Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.SetCookie("Authorization", ss, 60*15, "/", "", false, true)
+	c.SetCookie("Authorization", ss, 60*15, "/", "http://localhost:5173", false, false)
 	c.JSON(http.StatusOK, LoginRes{ss})
 }
 
@@ -69,12 +69,12 @@ func (h *handler) Register(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.SetCookie("Authorization", ss, 60*15, "/", "", false, true)
+	c.SetCookie("Authorization", ss, 60*15, "/", "", false, false)
 	c.JSON(http.StatusOK, RegisterRes{ss})
 }
 
 func (h *handler) Logout(c *gin.Context) {
-	c.SetCookie("Authorization", "", -1, "/", "", false, true)
+	c.SetCookie("Authorization", "", -1, "/", "", false, false)
 }
 
 func (h *handler) GetUser(c *gin.Context) {

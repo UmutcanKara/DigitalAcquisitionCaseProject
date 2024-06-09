@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"errors"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -20,9 +21,10 @@ type repository struct {
 func NewRepository(c *mongo.Client) Repository { return &repository{c} }
 
 func (r *repository) login(username, password string) error {
-	result := bson.M{username: "", password: ""}
+	//result := bson.M{username: "", password: ""}
+	loginRes := LoginReq{}
 	coll := r.client.Database("DigitalAcquisitionCaseProject").Collection("users")
-	err := coll.FindOne(context.TODO(), bson.M{"username": username}).Decode(&result)
+	err := coll.FindOne(context.TODO(), bson.M{"username": username}).Decode(&loginRes)
 	if err != nil {
 		return err
 	}
@@ -30,6 +32,7 @@ func (r *repository) login(username, password string) error {
 		return errors.New("user not found")
 	}
 
+	fmt.Println("loginRes", loginRes)
 	return nil
 }
 

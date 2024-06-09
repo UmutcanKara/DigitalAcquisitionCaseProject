@@ -3,18 +3,17 @@ package weather
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type Repository interface {
-	findWeather(hometown string) (bson.M, error)
+	findWeather(hometown string) (RepositoryBson, error)
 	updateWeather(hometown string, weather HistoryWeatherResponse) error
 	addWeather(hometown string, weather HistoryWeatherResponse) error
 }
 
 type Service interface {
 	findWeather(ctx context.Context, hometown, startDate string) (HistoryWeatherResponse, error)
-	addWeather(ctx context.Context, hometown string) error
+	addWeather(ctx context.Context, hometown, startDate string) error
 	updateWeather(ctx context.Context, hometown string) error
 }
 
@@ -28,19 +27,37 @@ type GeocodingResponse struct {
 		FormattedAddress string `json:"formatted_address"`
 		Geometry         struct {
 			Location struct {
-				Lat float32 `json:"lat"`
-				Lng float32 `json:"lng"`
+				Lat float64 `json:"lat"`
+				Lng float64 `json:"lng"`
 			} `json:"location"`
 		} `json:"geometry"`
 	} `json:"results"`
 	Status string `json:"status"`
 }
-
+type HourlyTemps struct {
+	Time []string  `json:"time" bson:"time"`
+	Temp []float64 `json:"temp" bson:"temp"`
+}
 type HistoryWeatherResponse struct {
-	Latitude  float32 `json:"latitude"`
-	Longitude float32 `json:"longitude"`
-	Hourly    struct {
-		Time []string  `json:"time"`
-		Temp []float32 `json:"temperature_2m"`
+	Latitude  float64     `json:"latitude" bson:"latitude"`
+	Longitude float64     `json:"longitude" bson:"longitude"`
+	Hourly    HourlyTemps `json:"hourly" bson:"hourly"`
+}
+type WeatherData struct {
+	Hourly struct {
+		Time          []string  `json:"time"`
+		Temperature2m []float64 `json:"temperature_2m"`
 	} `json:"hourly"`
+}
+
+type RepositoryBson struct {
+	Town    string `json:"town" bson:"town"`
+	Weather struct {
+		Latitude  float64 `json:"latitude" bson:"latitude"`
+		Longitude float64 `json:"longitude" bson:"longitude"`
+		Hourly    struct {
+			Time []string  `json:"time" bson:"time"`
+			Temp []float64 `json:"temp" bson:"temp"`
+		} `json:"hourly" bson:"hourly"`
+	} `json:"weather" bson:"weather"`
 }

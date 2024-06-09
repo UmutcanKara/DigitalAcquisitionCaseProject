@@ -15,12 +15,12 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	hosts := map[string]struct{}{"localhost:8080": {}, "127.0.0.1:8080": {}}
+	hosts := map[string]struct{}{"localhost:8081": {}, "127.0.0.1:8081": {}}
 
 	// initialize new router and add handlers
 	r := router.WeatherRouter(hosts)
 
-	err = r.Run(":8080")
+	err = r.Run(":8081")
 	if err != nil {
 		log.Fatal(err)
 	}

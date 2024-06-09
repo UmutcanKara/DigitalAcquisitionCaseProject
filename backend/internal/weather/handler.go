@@ -2,6 +2,7 @@ package weather
 
 import (
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -13,13 +14,14 @@ func NewHandler(service Service) Handler { return &handler{service} }
 
 func (h handler) FindWeather(c *gin.Context) {
 	ctx := c.Request.Context()
-	hometown := c.Query("hometown")
+	hometown := c.Query("city")
 	startDate := c.Query("start_date")
 
 	res, err := h.Service.findWeather(ctx, hometown, startDate)
 	if err != nil {
 		// If hometown weather does not exist, add it.
-		err = h.Service.addWeather(ctx, hometown)
+		log.Println("Adding City")
+		err = h.Service.addWeather(ctx, hometown, startDate)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -36,7 +38,7 @@ func (h handler) FindWeather(c *gin.Context) {
 
 func (h handler) UpdateWeather(c *gin.Context) {
 	ctx := c.Request.Context()
-	hometown := c.Query("hometown")
+	hometown := c.Query("city")
 
 	err := h.Service.updateWeather(ctx, hometown)
 	if err != nil {

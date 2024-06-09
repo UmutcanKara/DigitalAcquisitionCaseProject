@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM golang:1.18-alpine AS build
+FROM golang:1.22-alpine AS build
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
@@ -24,10 +24,10 @@ WORKDIR /root/
 # Copy the Pre-built binary file from the previous stage
 COPY --from=build /app/auth .
 
-# Introduce environment variables
-ENV MONGODB_URI = "mongodb+srv://testuser:testuser@users.n6ag96y.mongodb.net/?retryWrites=true&w=majority&appName=users"
+# Copy the .env file inside
+COPY .env .
 
-# Expose port 8081 to the outside world
+# Expose port 8080 to the outside world
 EXPOSE 8080
 
 # Command to run the executable
