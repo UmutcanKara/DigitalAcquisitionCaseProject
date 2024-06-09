@@ -1,9 +1,9 @@
 package auth
 
 import (
+	"backend/util"
 	"context"
 	"errors"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -22,17 +22,18 @@ func NewRepository(c *mongo.Client) Repository { return &repository{c} }
 
 func (r *repository) login(username, password string) error {
 	//result := bson.M{username: "", password: ""}
-	loginRes := LoginReq{}
+	loginReq := LoginReq{}
 	coll := r.client.Database("DigitalAcquisitionCaseProject").Collection("users")
-	err := coll.FindOne(context.TODO(), bson.M{"username": username}).Decode(&loginRes)
+	err := coll.FindOne(context.TODO(), bson.M{"username": username}).Decode(&loginReq)
 	if err != nil {
 		return err
 	}
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		return errors.New("user not found")
 	}
-
-	fmt.Println("loginRes", loginRes)
+	if err = util.CheckPassword(loginReq.Password, password); err != nil {
+		return err
+	}
 	return nil
 }
 

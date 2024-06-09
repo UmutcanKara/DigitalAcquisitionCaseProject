@@ -8,7 +8,7 @@ const Register = () => {
     const [formData, setFormData] = React.useState({
         username: "",
         password: "",
-        city: ""
+        hometown: ""
     })
     const navigate = useNavigate()
     const { login } = React.useContext(AuthContext)
@@ -30,8 +30,8 @@ const Register = () => {
         <Box gap={2} display="flex" flexDirection="column" >
             <TextField value={formData.username} onChange={onChangeHandler} name="username" label="Username" required />
             <TextField value={formData.password} onChange={onChangeHandler} name="password" label="Password" type="password" required />
-            <TextField value={formData.city} onChange={onChangeHandler} name="city" label="City" required />
-            <Button variant="contained" sx={{paddingY: 1}} onClick={onSubmitHandler} >Login</Button>
+            <TextField value={formData.hometown} onChange={onChangeHandler} name="hometown" label="City" required />
+            <Button variant="contained" sx={{paddingY: 1}} onClick={onSubmitHandler} >Register</Button>
         </Box>
     </Box>
 }

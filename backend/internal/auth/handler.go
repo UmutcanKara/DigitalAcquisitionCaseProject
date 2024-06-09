@@ -38,7 +38,7 @@ func (h *handler) Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.SetCookie("Authorization", ss, 60*15, "/", "http://localhost:5173", false, false)
+	c.SetCookie("Authorization", ss, 60*60*24, "/", "http://localhost:5173", false, false)
 	c.JSON(http.StatusOK, LoginRes{ss})
 }
 

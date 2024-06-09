@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Button, Container, Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 
 import Login from "../components/Auth/Login.jsx";
 import Register from "../components/Auth/Register.jsx";
@@ -22,10 +22,8 @@ const Auth = () => {
             }
             {/*<Box>*/}
             {
-                internalComponentName === "login" ? <Typography variant={"h4"} paragraph >If you don't have an account
-                        <span style={spanStyle} onClick={() => spanOnClick("register")} >register!</span></Typography>
-                    :internalComponentName === "register" ? <Typography variant={"h4"} paragraph >If you already have an account
-                            <span style={spanStyle} onClick={() => spanOnClick("login")}>login!</span></Typography>
+                internalComponentName === "login" ? <Typography variant={"h4"} paragraph >If you don't have an account <span style={spanStyle} onClick={() => spanOnClick("register")} >register!</span></Typography>
+                    :internalComponentName === "register" ? <Typography variant={"h4"} paragraph >If you already have an account <span style={spanStyle} onClick={() => spanOnClick("login")}>login!</span></Typography>
                     :null
             }
             {/*</Box>*/}

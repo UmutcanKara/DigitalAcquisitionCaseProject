@@ -23,6 +23,7 @@ func (h handler) FindWeather(c *gin.Context) {
 		log.Println("Adding City")
 		err = h.Service.addWeather(ctx, hometown, startDate)
 		if err != nil {
+			log.Println("Error adding City: ", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}

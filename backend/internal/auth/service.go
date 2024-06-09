@@ -1,7 +1,9 @@
 package auth
 
 import (
+	"backend/util"
 	"context"
+	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/bson"
 	"os"
@@ -31,8 +33,14 @@ func (s *service) login(ctx context.Context, req LoginReq) error {
 func (s *service) register(ctx context.Context, req RegisterReq) error {
 	ctx, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
-
-	if err := s.Repository.register(req.Username, req.Password, req.Hometown); err != nil {
+	if (req.Username == "") || (req.Password == "") || (req.Hometown == "") {
+		return errors.New("username, password, or city is empty")
+	}
+	hashedPwd, err := util.HashPassword(req.Password)
+	if err != nil {
+		return err
+	}
+	if err := s.Repository.register(req.Username, hashedPwd, req.Hometown); err != nil {
 		return err
 	}
 
